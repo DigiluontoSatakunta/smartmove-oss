@@ -6,7 +6,6 @@ Smartmove Open Source Software release tree.
 ### Project Lead
 
 - Jere Grönman, Tampere University
-- [Tuomas Pohjola](https://github.com/Tpohjola), University of Turku
 
 ### Smartmove Backend
 
