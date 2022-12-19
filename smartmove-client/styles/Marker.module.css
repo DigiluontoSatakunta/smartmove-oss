@@ -1,0 +1,79 @@
+.hikingMarker,
+.doorMarker,
+.activeMarker,
+.sensorMarker,
+.wikipediaMarker,
+.fireplaceMarker,
+.hutMarker,
+.natureAttractionMarker,
+.sightMarker,
+.smoothTraffic,
+.congestedTraffic,
+.stoppedTraffic,
+.campMarker,
+.weatherStationMarker,
+.gridAreaMarker {
+  border-radius: 32px;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  background-image: linear-gradient(356deg, #0000001c, transparent);
+}
+
+.activeMarker {
+  background: #4caf4f;
+}
+
+.doorMarker {
+  background: #03a9f4;
+}
+
+.gridAreaMarker {
+  background: #0073ff;
+  opacity: 0;
+}
+
+.hikingMarker {
+  background: #ef6c00;
+}
+
+.sensorMarker {
+  background: #14066c;
+}
+.smoothTraffic {
+  background: #06a27d;
+}
+.congestedTraffic {
+  background: #dacc14;
+}
+.stoppedTraffic {
+  background: #14066c;
+}
+
+.wikipediaMarker {
+  background: #f44336;
+}
+
+.fireplaceMarker {
+  background: #bf0000;
+}
+
+.hutMarker {
+  background: #c300ff;
+}
+
+.sightMarker {
+  background: #0044ff;
+}
+
+.natureAttractionMarker {
+  background: #8bc34a;
+}
+
+.campMarker {
+  background: #8d6e63;
+}
+
+.weatherStationMarker {
+  background: #3f51b5;
+}

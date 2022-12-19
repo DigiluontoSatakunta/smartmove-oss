@@ -1,0 +1,59 @@
+version: "3.7"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile_Development
+    container_name: backend
+    restart: always
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - "4040:4040"
+    depends_on:
+      - cache
+
+  client:
+    build:
+      context: ../smartmove-client
+      dockerfile: Dockerfile_Development
+    container_name: client
+    restart: always
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+
+  cache:
+    image: redis:6.2-alpine
+    hostname: redis
+    command: redis-server --bind 0.0.0.0 --port 6379 --appendonly no --save ""
+    restart: always
+    volumes:
+      - smartmove_cache:/data
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_PASSWORD=redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - cache
+
+volumes:
+  smartmove_cache: {}
+
+networks:
+  default:
