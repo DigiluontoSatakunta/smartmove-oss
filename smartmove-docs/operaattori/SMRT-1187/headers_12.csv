@@ -1,0 +1,5 @@
+#constant measurement,peopleCount
+#datatype ignored,ignored,tag,unsignedLong
+#timezone +0200
+#concat,dateTime:RFC3339,${date}T12:00:00+02:00
+date,hour,area_code,people

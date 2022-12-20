@@ -1,0 +1,8 @@
+.chip {
+  height: 22px !important;
+}
+
+.chip > span {
+  padding: 0 8px;
+  font-size: 10px;
+}

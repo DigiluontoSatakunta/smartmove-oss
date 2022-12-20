@@ -1,0 +1,3 @@
+#constant measurement,weather
+#datatype dateTime:RFC3339,ignored,ignored,ignored,ignored,ignored,unsignedLong,double,double,unsignedLong,double,long,double,double,unsignedLong,unsignedLong,double,double,double,double
+#timezone +0000

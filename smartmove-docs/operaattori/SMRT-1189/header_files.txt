@@ -1,0 +1,9 @@
+Kankaanpää_Niinisalo_lentokenttä_01012019-20102022.csv
+Karvia_Alkkia_01012019-20102022.csv
+Kokemäki_Tulkkila_01012019-20102022.csv
+Kristiinankaupunki_Majakka_01012019-20102022.csv
+Pori_lentoasema_01012019-20102022.csv
+Pori_rautatieasema_01012019-20102022.csv
+Pori_Tahkoluoto_satama_01012019-20102022.csv
+Rauma_Kylmäpihlaja_01012019-20102022.csv
+Rauma_Pyynpää_01012019-20102022.csv

@@ -1,0 +1,828 @@
+type Mutation {
+  """
+  Add new favorite to the user
+  """
+  addFavorite(
+    id: String!
+    name: String!
+    uid: String!
+    timestamp: String!
+    type: String!
+  ): Favorite
+  """
+  Remove favorite from the user
+  """
+  removeFavorite(id: String!, type: String!, uid: String!): Favorite
+}
+
+type Query {
+  site(id: Int!): Site
+  sites(offset: Int, limit: Int): [Site]
+  counter(serial: String!): Counter
+  counters(offset: Int, limit: Int): [Counter]
+  doorLatest: Door
+  doorHistory: [Door]
+  # https://www.mediawiki.org/wiki/API:Geosearch
+  wikipediaGeoSearch(
+    gscoords: String!
+    gsradius: Int!
+    gslimit: Int!
+  ): WikipediaGeoSearchResult
+  wikipediaPage(pageid: Int!): WikipediaPage
+  wikipediaPageParsedContent(pageid: Int!): WikipediaPageParsedContent
+  # https://tie.digitraffic.fi/swagger/
+  digitrafficTmsStationsMetaData: [DigitrafficTmsStationsMetaData]
+  digitrafficTmsSensorsMetaData: DigitrafficTmsSensorsMetaData
+  digitrafficTmsStation(number: Int!): DigitrafficTmsStation
+  digitrafficTmsSensorLamData(id: Int!): DigitrafficTmsSensorLamData
+  digitrafficAllSensorLamData: DigitrafficAllSensorLamData
+
+  """
+  Syke
+  """
+  sykeTopListOfCompanies(
+    id: String
+    classification: String
+    type: String
+  ): [SykeCompany]
+
+  sykeNaceAggregations(id: String): [SykeNaceAggregation]
+
+  """
+  Get sunrise and sunset times for a given date and location.
+  """
+  twilight(lat: Float!, lng: Float!, date: String!): Twilight
+
+  """
+  Get sunrise and sunset times for a given date (2019-2022) in Pori.
+  """
+  twilightPori(date: String!): Twilight
+
+  """
+  Get the aggregated data for a given dates and aggregation time interval.
+  """
+  peopleCounter(
+    start: String!
+    stop: String
+    aggregateWindow: String
+  ): [PeopleCounter]
+
+  operatorDataByAreaCode(
+    areaCode: Int!
+    start: String!
+    stop: String!
+    aggregateWindow: String
+  ): [OperatorData]
+
+  weatherData(
+    station: String!
+    element: Element!
+    start: String!
+    stop: String!
+    aggregateWindow: String
+    fn: String
+  ): [WeatherData]
+
+  heatmapData(start: String!, stop: String!): [HeatmapData]
+
+  # favorites
+  favorites: [Favorite]
+  # open weather map
+  openWeatherMapLocationsByCoordinates(
+    lat: Float!
+    lon: Float!
+    limit: Int!
+  ): [OpenWeatherMapLocation]
+
+  """
+  Get the POI data from tulikartta.fi.
+  """
+  fireplaces(county: String!, type: String): [Fireplace]
+
+  """
+  Get the Weather forecast from Ilmatietenlaitos for a given location.
+  """
+  forecast(location: String!): Forecast
+
+  """
+  Metsähallitus counter data.
+  """
+  data(
+    id: Int!
+    begin: String
+    end: String
+    step: Step
+    complete: Boolean
+  ): [Data]
+
+  """
+  Instagram feed by location.
+  """
+  instagramFeedByLocation(
+    name: String
+    latitude: Float!
+    longitude: Float!
+  ): InstagramGetMediaByLocationResponse
+
+  """
+  Instagram feed by username.
+  """
+  instagramFeedByUsername(
+    username: String!
+  ): InstagramGetMediaByLocationResponse
+
+  """
+  Instagram feed by hashtag.
+  """
+  instagramFeedByHashtag(hashtag: String!): [InstagramMediaNode]
+
+  """
+  Plotr image from influxDB data.
+  """
+  plotr(
+    area_code: Int!
+    x_param: String!
+    y_param: String!
+    range_window: String
+    aggregate_window: String
+  ): PlotrImage
+}
+
+type PlotrImage {
+  image: String
+}
+
+enum Step {
+  "15m"
+  hour
+  day
+  week
+  month
+  year
+}
+
+type SykeNaceAggregation {
+  nace: String
+  naceName: String
+  value: Int
+}
+
+type SykeCompany {
+  name: String
+  turnover: Int
+  employees: Int
+  lastAvailableYear: Int
+  city: String
+  geometry: SykeCompanyGeometry
+}
+
+type SykeCompanyGeometry {
+  location: SykeCompanyGeometryLocation
+}
+
+type SykeCompanyGeometryLocation {
+  lat: Float
+  lng: Float
+}
+
+"""
+Historical weather data from Ilmatieteen laitos.
+"""
+type WeatherData {
+  time: String
+  value: Float
+}
+
+enum Element {
+  air_temperature
+  cloud_amount
+  dew
+  gust_speed
+  horizontal_visibility
+  precipitation_amount
+  precipitation_intensity
+  pressure
+  relative_humidity
+  snow_depth
+  wind_direction
+  wind_speed
+}
+
+type HeatmapData {
+  "The value of the data point"
+  value: Float
+  "The areaCode of the data point"
+  areaCode: Int
+}
+
+type OperatorData {
+  "The date of the data"
+  time: String
+  "The number of people"
+  value: Float
+  "The area code of the data"
+  areaCode: Int
+}
+
+"""
+LoraWan device: People Counter test device.
+"""
+type PeopleCounter {
+  time: String
+  value: Int
+}
+
+"""
+Sunrise and sunset times.
+"""
+type Twilight {
+  id: ID!
+  sunrise: String
+  sunset: String
+  solar_noon: String
+  day_length: String
+  civil_twilight_begin: String
+  civil_twilight_end: String
+  nautical_twilight_begin: String
+  nautical_twilight_end: String
+  astronomical_twilight_begin: String
+  astronomical_twilight_end: String
+}
+
+"""
+Ilmatieteenlaitos weather forecast.
+"""
+type Forecast {
+  measurements: Measurements
+  place: String
+}
+
+"""
+Ilmatieteenlaitos weather forecast measurements.
+"""
+type Measurements {
+  Temperature: Temperature
+  WeatherSymbol3: WeatherSymbol3
+  WindSpeedMS: WindSpeedMS
+}
+
+"""
+Ilmatieteenlaitos weather forecast sumbols.
+"""
+type WeatherSymbol3 {
+  label: String
+  symbol: String
+  values: [WeatherSymbolValues]
+}
+
+"""
+Ilmatieteenlaitos weather forecast sumbols values.
+"""
+type WeatherSymbolValues {
+  time: String
+  value: String
+}
+
+"""
+Ilmatieteenlaitos weather forecast windspeed.
+"""
+type WindSpeedMS {
+  label: String
+  symbol: String
+  values: [WindSpeedValues]
+}
+
+"""
+Ilmatieteenlaitos weather forecast windspeed values.
+"""
+type WindSpeedValues {
+  time: String
+  value: String
+}
+
+"""
+Ilmatieteenlaitos weather forecast temperature.
+"""
+type Temperature {
+  label: String
+  symbol: String
+  values: [TemperatureValues]
+}
+
+"""
+Ilmatieteenlaitos weather forecast temperature values.
+"""
+type TemperatureValues {
+  time: String
+  value: String
+}
+
+type OpenWeatherMapLocation {
+  name: String!
+  local_names: OpenWeatherMapLocationLocalNames
+  lat: Float!
+  lon: Float!
+  country: String!
+}
+
+type OpenWeatherMapLocationLocalNames {
+  en: String
+  fi: String
+  sv: String
+}
+
+type Favorite {
+  id: String!
+  name: String!
+  uid: String!
+  timestamp: String!
+  type: String!
+}
+
+"""
+Hacklab Pori counter data.
+"""
+type Door {
+  result: DoorResult
+}
+
+"""
+Hacklab Pori counter data result.
+"""
+type DoorResult {
+  received_at: String
+  end_device_ids: DoorEndDevice
+  uplink_message: DoorUplinkMessage
+}
+
+"""
+Hacklab Pori counter data end device.
+"""
+type DoorEndDevice {
+  device_id: String
+  application_ids: DoorApplicationIds
+  dev_eui: String
+  dev_addr: String
+}
+
+"""
+Hacklab Pori counter data application ids.
+"""
+type DoorApplicationIds {
+  application_id: String
+}
+
+"""
+Hacklab Pori counter data uplink message.
+"""
+type DoorUplinkMessage {
+  f_port: Int
+  f_cnt: Int
+  frm_payload: String
+  decoded_payload: DoorDecodedPayload
+  rx_metadata: [DoorRxMetadata]
+  settings: DoorSettings
+  received_at: String
+  consumed_airtime: String
+  locations: DoorUserLocation
+  version_ids: DoorVersionIds
+}
+
+"""
+Hacklab Pori counter data decoded payload.
+"""
+type DoorVersionIds {
+  brand_id: String
+  model_id: String
+  hardware_version: String
+  firmware_version: String
+  band_id: String
+}
+
+"""
+Hacklab Pori counter data decoded payload.
+"""
+type DoorUserLocation {
+  user: DoorLocation
+}
+
+"""
+Hacklab Pori counter data decoded payload.
+"""
+type DoorSettings {
+  coding_rate: String
+  frequency: String
+  timestamp: String
+  time: String
+}
+
+type DoorRxMetadata {
+  gateway_ids: DoorGatewayIds
+  time: String
+  timestamp: String
+  rssi: Int
+  channel_rssi: Int
+  snr: Float
+  location: DoorLocation
+  channel_index: Int
+}
+
+type DoorGatewayIds {
+  gateway_id: String
+  eui: String
+}
+
+type DoorLocation {
+  latitude: Float
+  longitude: Float
+  altitude: Float
+  source: String
+}
+
+type DoorDecodedPayload {
+  ALARM: Int
+  BAT_V: Float
+  DOOR_OPEN_STATUS: Int
+  DOOR_OPEN_TIMES: Int
+  LAST_DOOR_OPEN_DURATION: Int
+  MOD: Int
+}
+
+"""
+The word counting site should not be confused with the word counter. The counter is the unit itself, while the counting site is where the unit is installed. In Eco-Visio, the counter is represented by its serial number, while the counting site is represented by each item you see in your dashboard, which is in turn given a location name, coordinates, a picture, etc. While counters can move, the counting sites are what will retain the relevant data. With this request you get information allowing to identify or describe your counting sites.
+"""
+type Site {
+  "Unique ID generated by the server"
+  id: Int!
+  "Name of the counting site"
+  name: String
+  "Name of the domain"
+  domain: String
+  "Identifier of the domain"
+  domainId: Int
+  "Geographic coordinates in decimal degrees"
+  latitude: Float
+  "Geographic coordinates in decimal degrees"
+  longitude: Float
+  "{1: pedestrian, 2: bicycle, 3: horse, 4: car, 5: bus, 6: minibus, 7: undefined, 8: motorcycle, 9: kayak, 13: e-scooter, 14: truck}"
+  userType: Int
+  timezone: String
+  "Data recording interval (15 or 60 minutes)"
+  interval: Int
+  "Direction detection information. {1: IN direction, 2: OUT direction, 5: No direction distinction}"
+  sens: Int
+  "First Counter Installation Date. Format: ISO 8601"
+  installationDate: String
+  "Date of First Data. May differ from installationDate because reconstructed or missing data."
+  firstData: String
+  "URLs of the photos of the counting site"
+  photos: [String]
+  "Serial number of the counter currently linked to the counting site"
+  counter: Counter
+  "Type of site (\"real ou virtual\")"
+  type: String
+  "Visibility of the site"
+  visible: Boolean
+  "List of the channels of the counting site (i.e.: user types, directions, etc.)"
+  channels: [Site]
+  "List of the tags of the counting site"
+  tags: [Tag]
+}
+"""
+The word Tag refers to a grouping of counting sites, made by users. This grouping has a name, and a color to distinguish them.
+"""
+type Tag {
+  "Identifier of the tag"
+  id: Int!
+  "Name of the tag"
+  name: String
+  "Description of the tag"
+  description: String
+  "Color of the tag (Hex format, example : #24b7d2)"
+  color: String
+  "Identifier of the domain"
+  domainId: Int
+  "Username of the owner of the tag"
+  username: String
+}
+
+"""
+The word Data refers to the counting data produced by the counter and recorded to the counting site.
+"""
+type Data {
+  "Deprecated. The attribute \"date\" is not ISO-8601 compliant. The timestamp is returned by the API in local timezone even if \"+0000\" indicates UTC datetime. Please, use the \"isoDate\" attribute instead."
+  date: String
+  "Format ISO 8601. Date in local timezone with GMT offset. The offset format is basic (example : \"+0200\") and \"+0000\" is not replaced by \"Z\""
+  isoDate: String
+  "Number of people counted"
+  counts: Int
+  "Status of the data {0: raw / 1: excluded / 2: deleted / 4: modified / 8: validated / 16: certified} Note that these statuses can be combined. Example: status 12 = modified (4) and validated (8)"
+  status: Int
+}
+
+"""
+With this request the user gets information allowing them to identify or describe the counters. The word "counter" should not be confused with the word "counting site". The counter is the unit itself, while the counting site is where the unit is installed. In Eco-Visio, the counter is represented by its serial number, while the counting site is represented by each item you see in your dashboard, which is in turn given a location name, coordinates, a picture, etc.
+"""
+type Counter {
+  "Counter serial number"
+  serial: String
+  "Modem number"
+  gsm: String
+  "ICCID number"
+  iccid: String
+  "Eco-Counter product code"
+  articleCode: String
+  softVersion: String
+  hardVersion: String
+  "Format: ISO 8601"
+  expeditionDate: String
+}
+
+type InstagramGetMediaByLocationResponse {
+  location_info: InstagramLocationInfo
+  ranked: InstagramGetMediaByLocationResponseMedia
+  recent: InstagramGetMediaByLocationResponseMedia
+}
+
+type InstagramLocationInfo {
+  location_id: String
+  facebook_places_id: String
+  name: String
+  phone: String
+  website: String
+  category: String
+  price_range: Int
+  hours: [String]
+  lat: Float
+  lng: Float
+  location_address: String
+  location_city: String
+  location_region: String
+  location_zip: String
+}
+
+type InstagramGetMediaByLocationResponseMedia {
+  sections: [InstagramGetMediaByLocationResponseSection]
+  more_available: Boolean
+  next_page: Int
+  next_media_ids: [String]
+  next_max_id: String
+}
+
+type InstagramGetMediaByLocationResponseSection {
+  layout_type: String
+  layout_content: InstagramGetMediaByLocationResponseSectionLayoutContent
+  feed_type: String
+  explore_item_info: InstagramGetMediaByLocationResponseSectionExploreItemInfo
+}
+
+type InstagramGetMediaByLocationResponseSectionExploreItemInfo {
+  num_columns: Int
+  total_num_columns: Int
+  aspect_ratio: Float
+  autoplay: Boolean
+}
+
+type InstagramGetMediaByLocationResponseSectionLayoutContent {
+  medias: [InstagramGetMediaByLocationResponseSectionLayoutContentMedia]
+}
+
+type InstagramGetMediaByLocationResponseSectionLayoutContentMedia {
+  taken_at: Int
+  pk: Int
+  id: String
+  media_type: Int
+  code: String
+  client_cache_key: String
+  carousel_media_count: Int
+  lat: Float
+  lng: Float
+  carousel_media: [InstagramGetMediaByLocationResponseSectionLayoutContentMedia]
+}
+
+type InstagramMediaNode {
+  node: InstagramMedia
+}
+
+type InstagramMedia {
+  id: String
+  shortcode: String
+  taken_at_timestamp: Int
+  dimensions: InstagramMediaNodeDimensions
+  display_url: String
+  thumbnail_src: String
+  thumbnail_resources: [InstagramMediaNodeThumbnailResource]
+  is_video: Boolean
+}
+
+type InstagramMediaNodeDimensions {
+  height: Int
+  width: Int
+}
+
+type InstagramMediaNodeThumbnailResource {
+  src: String
+  config_width: Int
+  config_height: Int
+}
+
+type WikipediaPage {
+  query: WikipediaPageQuery
+}
+
+type WikipediaPageParsedContent {
+  text: String
+}
+
+type WikipediaPageQuery {
+  pages: [WikipediaPageQueryPages]
+}
+
+type WikipediaPageQueryPages {
+  pageid: Int
+  title: String
+  ns: Int
+  images: [WikipediaPageQueryPagesImages]
+  revisions: [WikipediaPageQueryPagesRevisions]
+}
+
+type WikipediaPageQueryPagesRevisions {
+  slots: WikipediaPageQueryPagesRevisionsSlots
+}
+
+type WikipediaPageQueryPagesRevisionsSlots {
+  main: WikipediaPageQueryPagesRevisionsSlotsMain
+}
+
+type WikipediaPageQueryPagesRevisionsSlotsMain {
+  contentmodel: String
+  contentformat: String
+  content: String
+}
+
+type WikipediaPageQueryPagesImages {
+  title: String
+  ns: Int
+}
+
+type WikipediaGeoSearchResult {
+  query: WikipediaGeoSearchResultQuery
+}
+
+type WikipediaGeoSearchResultQuery {
+  geosearch: [WikipediaGeoSearchResultGeosearch]
+}
+
+type WikipediaGeoSearchResultGeosearch {
+  title: String
+  pageid: Int
+  lat: Float
+  lon: Float
+  dist: Float
+  primary: String
+}
+
+type DigitrafficAllSensorLamData {
+  dateUpdatedTime: String
+  tmsStations: [AllLamStations]
+}
+
+type AllLamStations {
+  id: String
+  measuredTime: String
+  sensorValues: [LamSensorValues]
+}
+
+type LamSensorValues {
+  id: Int
+  roadStationId: Int
+  name: String
+  sensorValue: Float
+  sensorUnit: String
+  measuredTime: String
+}
+
+type DigitrafficTmsStation {
+  id: Int
+  type: String
+  geometry: DigitrafficTmsStationsMetaDataGeometry
+  properties: DigitrafficTmsStationsMetaDataProperties
+}
+
+type DigitrafficTmsSensorLamData {
+  dateUpdatedTime: String
+  tmsStations: [DigitrafficLamStations]
+}
+
+type DigitrafficLamStations {
+  id: Int
+  tmsNumber: Int
+  measuredTime: String
+  sensorValues: [DigitrafficSensorValues]
+}
+
+type DigitrafficSensorValues {
+  id: Int
+  roadStationId: Int
+  name: String
+  oldName: String
+  shortName: String
+  sensorValue: Float
+  sensorUnit: String
+  timeWindowStart: String
+  timeWindowEnd: String
+  measuredTime: String
+}
+
+type DigitrafficTmsStationsMetaData {
+  id: Int
+  name: String
+  description: String
+  type: String
+  geometry: DigitrafficTmsStationsMetaDataGeometry
+  properties: DigitrafficTmsStationsMetaDataProperties
+}
+
+type DigitrafficTmsStationsMetaDataGeometry {
+  type: String
+  coordinates: [Float]
+}
+
+type DigitrafficTmsStationsMetaDataProperties {
+  roadStationId: Int
+  tmsNumber: Int
+  name: String
+  collectionInterval: Int
+  collectionStatus: String
+  municipality: String
+  municipalityCode: String
+  province: String
+  provinceCode: String
+  names: DigitrafficTmsStationsMetaDataPropertiesNames
+  roadAddress: DigitrafficTmsStationsMetaDataPropertiesRoadAddress
+  liviId: String
+  country: String
+  startTime: String
+  repairMaintenanceTime: String
+  annualMaintenanceTime: String
+  state: String
+  purpose: String
+  coordinatesETRS89: [Float]
+  direction1Municipality: String
+  direction2Municipality: String
+  freeFlowSpeed1: Float
+  freeFlowSpeed2: Float
+}
+
+type DigitrafficTmsStationsMetaDataPropertiesNames {
+  fi: String
+  sv: String
+  en: String
+}
+
+type DigitrafficTmsStationsMetaDataPropertiesRoadAddress {
+  roadNumber: Int
+  roadSection: Int
+  distanceFromRoadSectionStart: Int
+  carriagewayCode: Int
+  roadMaintenanceClass: String
+  contractArea: String
+  contractAreaCode: Int
+  carriageway: String
+}
+
+type DigitrafficTmsSensorsMetaData {
+  dataUpdatedTime: String
+  dataLastCheckedTime: String
+  roadStationSensors: [DigitrafficTmsSensorsMetaDataRoadStationSensors]
+}
+
+type DigitrafficTmsSensorsMetaDataRoadStationSensors {
+  id: Int
+  name: String
+  shortName: String
+  unit: String
+  accuracy: Int
+  nameOld: String
+  sensorValueDescriptions: [DigitrafficTmsSensorsMetaDataRoadStationSensorsSensorValueDescriptions]
+  descriptions: String
+  presentationNames: String
+  vehicleClasses: String
+  lane: Int
+  direction: Int
+  description: String
+}
+
+type DigitrafficTmsSensorsMetaDataRoadStationSensorsSensorValueDescriptions {
+  descriptionEn: String
+  descriptionFi: String
+  sensorValue: Int
+}
+
+type Fireplace {
+  id: String!
+  name: String
+  type: String
+  county: String
+  coordinates: [Float]
+}

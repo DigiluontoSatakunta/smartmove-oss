@@ -1,0 +1,5 @@
+#constant measurement,tripCount
+#datatype ignored,tag,tag,unsignedLong
+#timezone +0200
+#concat,dateTime:RFC3339,${date}T00:00:00+02:00
+date,origin_area_code,destination_area_code,people

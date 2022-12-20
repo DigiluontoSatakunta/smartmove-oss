@@ -1,0 +1,36 @@
+smartmove.example.org {
+	encode gzip
+
+	# handler for "api" path
+	handle_path /api* {
+		reverse_proxy * smartmove-backend:4040
+	}
+
+	# special duplicate handler for "graphql" path
+	handle_path /graphql* {
+		rewrite * /graphql
+		reverse_proxy * smartmove-backend:4040
+	}
+
+	# handler for "micror R-images" path
+	handle_path /micror* {
+		reverse_proxy * smartmove-micror:3066
+	}
+
+	# handler to catch all the remaining stuff
+	handle_path /* {
+		root * /opt/caddy_sites/app_smartmove_testi
+		try_files {path} /index.html
+		file_server
+
+		route {
+			header                 Cache-Control max-age=3600
+			header /_next/static/* Cache-Control max-age=31536000
+		}
+	}
+
+	header Strict-Transport-Security max-age=31536000; includeSubDomains
+	header X-Content-Type-Options nosniff
+	header X-Frame-Options DENY
+	header Referrer-Policy no-referrer-when-downgrade
+}

@@ -1,0 +1,61 @@
+@startuml "jarjestelmaarkkitehtuuri"
+
+header SmartMove
+title Järjestelmäarkkitehtuuri
+'General Defaults
+    !include ../style/stylesheet.iuml
+
+skinparam Roundcorner 4
+skinparam Monochrome true
+skinparam DefaultFontName SansSerif
+
+package "Docker" {
+  node Proxy {
+    component Caddy
+  }
+
+  node Client {
+    component NextJS
+  }
+
+  node "Server (Node.js)" as Server {
+    component Fastify
+    component Mercurius
+  }
+
+  node "Data" {
+    database Redis
+  }
+}
+
+  cloud Internet {
+    HTTP -- Caddy: 80
+    Caddy --> Caddy: 80 to 443 redirect
+    HTTPS -- Caddy: 443
+    Caddy -down- Client
+    Caddy -down- Server
+  }
+
+  Fastify -down- Redis
+
+cloud "3rd Party APIs" as 3PartyAPIs {
+  database Wikipedia
+  database Digitraffic
+  database Instagram
+  database Hacklab
+  database Metsähallitus
+  database Ilmatieteenlaitos
+  database Telia
+}
+
+  Fastify -- 3PartyAPIs
+  Wikipedia -[hidden]up- Instagram
+  Instagram -[hidden]up- Digitraffic
+  Digitraffic -[hidden]up- Hacklab
+  Hacklab -[hidden]up- Metsähallitus
+  Metsähallitus -[hidden]up- Ilmatieteenlaitos
+  Ilmatieteenlaitos -[hidden]up- Telia
+
+  Fastify -left- Mercurius
+
+@enduml

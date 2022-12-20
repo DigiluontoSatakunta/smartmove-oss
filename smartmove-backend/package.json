@@ -1,0 +1,33 @@
+{
+  "name": "smartmove-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "https://github.com/DigiluontoSatakunta/smartmove-backend.git",
+  "author": "Teemu Jönkkäri <teemu.jonkkari@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@fastify/cors": "^7.0.0",
+    "@fastify/http-proxy": "^7.2.0",
+    "@influxdata/influxdb-client": "^1.32.0",
+    "dotenv": "^16.0.3",
+    "fastify": "^3.29.3",
+    "geolib": "^3.3.3",
+    "graphql": "^16.6.0",
+    "instagram-web-api": "^2.2.2",
+    "ioredis": "^5.2.4",
+    "lodash": "^4.17.21",
+    "mercurius": "^9.6.0",
+    "mercurius-cache": "^1.7.1",
+    "node-fetch": "2",
+    "redis": "^4.4.0",
+    "uuid": "^8.3.2",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {},
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*"
+    ]
+  }
+}
